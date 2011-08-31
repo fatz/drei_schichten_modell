@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec'
   
   # benchmarks
-  s.add_development_dependency 'abgabenrechner'
+  s.add_development_dependency('abgabenrechner','0.2.2')
+  s.add_development_dependency('libxml-ruby')
   
 end
