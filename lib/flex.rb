@@ -1,4 +1,4 @@
-class Riester
+class Flex
   
   attr_reader :anlage, :rendite, :eigenbeitrag, :zulage
   attr_writer :partner, :kinder
