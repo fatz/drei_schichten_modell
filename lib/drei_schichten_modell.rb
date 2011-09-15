@@ -43,7 +43,7 @@ module DreiSchichtenModell
 
      def bestmix
        @riester = @avatar_info[:state_pension] ? riester : false
-       @bav     = @avatar_info[:sozi_obligation] ? bav : false
+       @bav     = @avatar_info[:compulsory_insurance] ? bav : false
        @basis   = @avatar_info[:state_pension] ? false : basis
 
        return  @riester, @bav, @basis
