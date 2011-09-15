@@ -1,5 +1,4 @@
 require "drei_schichten_modell/version"
-
 require "betriebliche_altersvorsorge"
 require "riester"
 require "basis"
