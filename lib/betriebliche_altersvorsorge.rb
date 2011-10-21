@@ -5,10 +5,10 @@ class BetrieblicheAltersvorsorge
  attr_accessor :steuerklasse, :kinder, :kosten, :anlage, :debug
 
  def initialize(bruttojahresgehalt)
-   @debug	 = false
+   @debug	 = true
    @kinder	 = false
    @brutto_pa 	 =  bruttojahresgehalt
-   @bav_pa 	 =  185*12
+   @bav_pa 	 =  220*12
    @steuerklasse =  1
  end
 
@@ -16,10 +16,12 @@ class BetrieblicheAltersvorsorge
 
 
  def abgaben(bav_pa)
+  puts '==========='
+  rechen_brutto_pa = @brutto_pa - bav_pa
 
   p = {
    :lzz 	=>  1,
-   :re4 	=>  @brutto_pa*100,
+   :re4 	=>  rechen_brutto_pa*100,
    :stkl 	=>  @steuerklasse,
    :pvz 	=>  1, # ohne kinder weil PKZ=1
    :krv         =>  0,
@@ -27,36 +29,34 @@ class BetrieblicheAltersvorsorge
   } 
 
   pe = BMF::Abgabenrechner.new(p).ausgaben
-
-  @lohnsteuer 	= pe[:lstlzz]
-  @soli 	= pe[:solzlzz]
-
-
-  #maximal 7573.50 in west | 6540.75 in Ost
-  @alv		= (@brutto_pa/100)*1.5
+  
+  @lohnsteuer 	= (pe[:lstlzz].to_i)/100
+  @soli 	= (pe[:solzlzz].to_i)/100
 
 
   #maximal 7573.50 in west | 6540.75 in Ost
-  @grv		= (@brutto_pa/100)*9.95
+  @alv		= (rechen_brutto_pa/100)*1.5
 
+  #maximal 7573.50 in west | 6540.75 in Ost
+  @grv		= (rechen_brutto_pa/100)*9.95
 
-  @gkv		= (@brutto_pa/100)*8.2 
-  @pfv		= @kinder ? (@brutto_pa/100)*0.975 : (@brutto_pa/100)*1.225  
+  @gkv		= (rechen_brutto_pa/100)*8.2
+  @pfv		= @kinder ? (rechen_brutto_pa/100)*0.975 : (rechen_brutto_pa/100)*1.225  
 
 
   if @debug
-   puts "jahresgehalt: #{@brutto_pa}"
+   puts "jahresgehalt: #{rechen_brutto_pa}"
    puts "BAV jahresbeitrag: #{bav_pa}"
    puts "lohnsteuer: #{@lohnsteuer}"
    puts "soli: #{@soli}"
-   puts "alv: #{@alv.to_f}"
-   puts "grv: #{@grv.to_f}"
-   puts "gkv: #{@gkv.to_f}"
-   puts "pfv: #{@pfv.to_f}"
+   puts "alv: #{@alv.to_i}"
+   puts "grv: #{@grv.to_i}"
+   puts "gkv: #{@gkv.to_i}"
+   puts "pfv: #{@pfv.to_i}"
   end
 
 
-  return (@lohnsteuer+@soli+@alv+@grv+@gkv+@pfv)/100
+  return @lohnsteuer+@soli+@alv+@grv+@gkv+@pfv
 
  end
 
@@ -64,10 +64,10 @@ class BetrieblicheAltersvorsorge
 
 
   def run
-   @ohnebav	 = @brutto_pa - abgaben(0).to_i
-   @mitbav	 = @brutto_pa - abgaben(@bav_pa*100).to_i
+   @ohnebav	 = abgaben(0).to_i
+   @mitbav	 = abgaben(@bav_pa).to_i
 
-   @zulage	 = (@mitbav - @ohnebav)
+   @zulage	 = (@ohnebav - @mitbav)
    @anlage	 = @bav_pa
    @eigenbeitrag = @anlage-@zulage
    

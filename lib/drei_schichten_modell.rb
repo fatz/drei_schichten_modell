@@ -50,19 +50,15 @@ module DreiSchichtenModell
      end
 
 
+    def ablaufleistung(anlage)
+      invest = Investment.new(anlage.to_i, @avatar_info[:pensionable_age].to_i-@avatar_info[:age].to_i, @avatar_info[:interest_rate].to_i)
+      puts invest.kapitelanwuchs
+      return invest.kapitelanwuchs.last.to_i
+    end
+
+
 
 
 
   end
-
-  
-  
-
-
-
-
-
-
-
-
 end

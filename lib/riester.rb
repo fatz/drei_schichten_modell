@@ -1,6 +1,6 @@
 class Riester
   
-  attr_reader :anlage, :rendite, :eigenbeitrag, :zulage
+  attr_reader :anlage, :rendite, :eigenbeitrag, :zulage, :ablaufleistung
   attr_writer :partner, :kinder
  
   def initialize(bruttojahreseinkommen)
@@ -11,6 +11,8 @@ class Riester
     @kinder = false
     @kinderzulage = 0
     @zulage = 0
+    @interest = 0
+    @runtime = 0
   end
 
 
@@ -34,6 +36,7 @@ class Riester
     @rendite      =  @zulage*100/@anlagebetrag
 
   end
+
 
 
 
