@@ -5,10 +5,10 @@ class BetrieblicheAltersvorsorge
  attr_accessor :steuerklasse, :kinder, :kosten, :anlage, :debug
 
  def initialize(bruttojahresgehalt)
-   @debug	 = true
+   @debug	 = false
    @kinder	 = false
    @brutto_pa 	 =  bruttojahresgehalt
-   @bav_pa 	 =  220*12
+   @bav_pa 	 =  Beitragsbemessungsgrenze.new('west').bav_maximal_beitrag   
    @steuerklasse =  1
  end
 
@@ -16,7 +16,7 @@ class BetrieblicheAltersvorsorge
 
 
  def abgaben(bav_pa)
-  puts '==========='
+
   rechen_brutto_pa = @brutto_pa - bav_pa
 
   p = {
@@ -66,13 +66,10 @@ class BetrieblicheAltersvorsorge
   def run
    @ohnebav	 = abgaben(0).to_i
    @mitbav	 = abgaben(@bav_pa).to_i
-
    @zulage	 = (@ohnebav - @mitbav)
    @anlage	 = @bav_pa
    @eigenbeitrag = @anlage-@zulage
-   
    @rendite	 = @zulage*100/@anlage
-
   end
 
 

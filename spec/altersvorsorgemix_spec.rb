@@ -12,7 +12,7 @@ describe DreiSchichtenModell do
       :age                   => 30,
       :taxclass              => 1,
       :churchtax             => true,
-      :compulsory_insurance    => true,
+      :compulsory_insurance   => true,
       :health_insurance      => 'g',
       :state_pension         => true,
       :children              => [2000],
@@ -94,7 +94,7 @@ describe DreiSchichtenModell do
     }
 
 
-    puts avatar = avatar3
+    avatar = avatar1
 
 
 
@@ -118,21 +118,21 @@ describe DreiSchichtenModell do
       end
     end
 
-    puts @gesamt_anlage
-    puts @gesamt_zulage
-    puts @gesamt_eigenbeitrag
-    puts @gesamt_ablaufleistung-versicherungskosten
+    puts "gesamt anlage p.a. #{@gesamt_anlage}"
+    puts "gesamt zulage p.a. #{@gesamt_zulage}"
+    puts "gesamt_eigenbeitrag p.a. #{@gesamt_eigenbeitrag}"
+    puts "gesamt_ablaufleistung mit 67zub #{@gesamt_ablaufleistung-versicherungskosten}"
     
-    puts '-- -- --'
-
+    puts ''
+    puts 'Kapitalberg -- -- --'
     # jahresbeitrag, zeitraum, verzinsung
     invest = Investment.new(@gesamt_anlage, avatar[:pensionable_age]-avatar[:age], avatar[:interest])
     endsumme = invest.kapitelanwuchs.last
-    puts "endkapital mit #{avatar[:pensionable_age]} nach #{avatar[:pensionable_age]-avatar[:age]} jahren: #{endsumme} euro"
-    
+    puts "endkapital mit #{avatar[:interest]}% verzinsung p.a. nach #{avatar[:pensionable_age]-avatar[:age]} jahren: #{endsumme} euro Brutto"
+    puts ''
+    puts 'Rente -- -- --'
     rentenfaktor = 36.51 # pro 10.000 euro
-
-    puts "Rente mit #{ 36.51*endsumme.to_f/10000 } "
+    puts "Private Rente pro monat: #{ (36.51*endsumme.to_f/10000).to_i} euro Brutto"
 
   end
   

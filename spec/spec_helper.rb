@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'bundler/setup'
+require 'beitragsbemessungsgrenze'
 require 'abgabenrechner'
 require 'drei_schichten_modell'
 require "investment"
