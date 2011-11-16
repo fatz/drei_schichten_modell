@@ -1,1 +1,1 @@
-rvm --create ruby-1.9.2-p290@drei_schichten_modell
+rvm --create ruby-1.9.3@drei_schichten_modell

@@ -3,17 +3,19 @@ require 'abgabenrechner'
 
 class Basis
  
- attr_reader :anlage, :zulage, :eigenbeitrag, :rendite
- attr_writer :debug, :steuerklasse, :basis_pa
+ attr_reader :anlage, :zulage, :eigenbeitrag, :rendite, :ablaufleistung
+ attr_writer :debug, :steuerklasse, :basis_pa, :verzinsung, :aufschubzeit
 
 
 
  def initialize(bruttojahresgehalt)
-  @debug	 = false
-  @brutto_pa 	 = bruttojahresgehalt
-  @basis_pa 	 = 20000
-  @steuerklasse  = 1
-  @plusdings 	 = 50   # damit das ergebis besser stimmt
+  @debug	      = false
+  @brutto_pa 	  = bruttojahresgehalt
+  @basis_pa 	  = 20000
+  @steuerklasse = 1
+  @plusdings 	  = 50   # damit das ergebis besser stimmt
+  @verzinsung   = 2
+  @aufschubzeit = 1
  end
 
 
@@ -26,23 +28,23 @@ class Basis
 
 
   p1 = {
-   :lzz 	=> 1,
-   :re4 	=> @brutto_pa*100,
-   :stkl	=> @steuerklasse,
-   :r 		=> 0,
+   :lzz 	    => 1,
+   :re4 	    => @brutto_pa*100,
+   :stkl	    => @steuerklasse,
+   :r 		    => 0,
    :lzzfreib 	=> @lzzfreib*100,
-   :krv 	=> 0
+   :krv 	    => 0
   }
   p1e = BMF::Abgabenrechner.new(p1).ausgaben
 
 
   p2 = {
-   :lzz  	=> 1,
-   :re4  	=> @brutto_pa*100,
-   :stkl 	=> @steuerklasse,
-   :r	 	=> 0,
+   :lzz  	    => 1,
+   :re4  	    => @brutto_pa*100,
+   :stkl 	    => @steuerklasse,
+   :r	 	      => 0,
    :lzzfreib 	=> 0,
-   :krv 	=> 0
+   :krv 	    => 0
   }
   p2e = BMF::Abgabenrechner.new(p2).ausgaben
 
@@ -52,7 +54,12 @@ class Basis
    @rendite	= (@zulage*100)/@basis_pa
    @eigenbeitrag= @anlage-@zulage
 
-
+   invest = Investment.new
+   invest.p = @verzinsung.to_f
+   invest.r = @anlage
+   invest.n = @aufschubzeit   
+   @ablaufleistung = invest.rn.to_i
+   
 
    if @debug
       puts "#{((p2e[:lstlzz]-p1e[:lstlzz])/100)+@plusdings} euro forderung"

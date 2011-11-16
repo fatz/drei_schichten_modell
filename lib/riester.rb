@@ -1,7 +1,7 @@
 class Riester
   
   attr_reader :anlage, :rendite, :eigenbeitrag, :zulage, :ablaufleistung
-  attr_writer :partner, :kinder
+  attr_writer :partner, :kinder, :verzinsung, :aufschubzeit
  
   def initialize(bruttojahreseinkommen)
     @bruttojahreseinkommen = bruttojahreseinkommen
@@ -11,8 +11,9 @@ class Riester
     @kinder = false
     @kinderzulage = 0
     @zulage = 0
-    @interest = 0
-    @runtime = 0
+    @verzinsung   = 2
+    @aufschubzeit = 1
+    @ablaufleistung = 0 
   end
 
 
@@ -34,7 +35,12 @@ class Riester
     @anlage       =  @anlagebetrag + @zulage
     @eigenbeitrag =  eigenbeitrag
     @rendite      =  @zulage*100/@anlagebetrag
-
+    
+    invest = Investment.new
+    invest.p = @verzinsung.to_f
+    invest.r = @anlage
+    invest.n = @aufschubzeit   
+    @ablaufleistung = invest.rn.to_i
   end
 
 

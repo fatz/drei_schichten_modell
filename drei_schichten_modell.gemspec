@@ -22,6 +22,6 @@ Gem::Specification.new do |s|
   # tests
   s.add_development_dependency 'rspec'
   
-  s.add_runtime_dependency('abgabenrechner','0.3.1')
+  s.add_runtime_dependency('abgabenrechner','0.3.3')
 
 end
