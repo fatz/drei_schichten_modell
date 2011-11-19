@@ -1,8 +1,8 @@
 require 'abgabenrechner'
 
 class BetrieblicheAltersvorsorge
- attr_reader :anlage, :zulage, :rendite, :eigenbeitrag, :zulage, :ablaufleistung
- attr_accessor :steuerklasse, :kinder, :kosten, :anlage, :bav_pa, :debug, :verzinsung, :aufschubzeit
+ attr_reader :anlage, :zulage, :rendite, :eigenbeitrag, :ablaufleistung
+ attr_accessor :steuerklasse, :kosten, :anlage, :bav_pa, :debug, :verzinsung, :aufschubzeit
 
  def initialize(bruttojahresgehalt)
    @debug	 = false
@@ -57,7 +57,6 @@ class BetrieblicheAltersvorsorge
    puts "pfv: #{@pfv.to_i}"
   end
 
-
   return @lohnsteuer+@soli+@alv+@grv+@gkv+@pfv
 
  end
@@ -71,7 +70,7 @@ class BetrieblicheAltersvorsorge
    @zulage	 = (@ohnebav - @mitbav)
    @anlage	 = @bav_pa
    @eigenbeitrag = @anlage-@zulage
-   @rendite	 = @zulage*100/@anlage
+   @rendite	 = (@zulage*100/@anlage)+@verzinsung
    
    invest = Investment.new
    invest.p = @verzinsung.to_f

@@ -11,7 +11,7 @@ class Riester
     @kinder = false
     @kinderzulage = 0
     @zulage = 0
-    @verzinsung   = 2
+    @verzinsung   = 2.0
     @aufschubzeit = 1
     @ablaufleistung = 0 
   end
@@ -34,10 +34,10 @@ class Riester
     @zulage       =  @grundzulage + @kinderzulage
     @anlage       =  @anlagebetrag + @zulage
     @eigenbeitrag =  eigenbeitrag
-    @rendite      =  @zulage*100/@anlagebetrag
+    @rendite      =  (@zulage*100/@anlagebetrag)+@verzinsung
     
     invest = Investment.new
-    invest.p = @verzinsung.to_f
+    invest.p = @verzinsung
     invest.r = @anlage
     invest.n = @aufschubzeit   
     @ablaufleistung = invest.rn.to_i

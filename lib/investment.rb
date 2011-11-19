@@ -1,4 +1,4 @@
-class Investment  
+class Investment
   attr_accessor :p, :r, :n, :k0, :inflation
   attr_reader :i
   
@@ -11,14 +11,22 @@ class Investment
   # Z	  -	Zinsbetrag
   # A	  -	Annuität
 
-  @inflation = 0
+
+  def initialize
+    # p	  -	Zinssatz in Prozent
+    @p = 0.0
+    
+    @inflation = 0.0
+    
+    # K0	-	Anfangskapital
+    @k0 = 0
+
+    # n	  -	Laufzeit (Jahre, Monate, Tage
+    # n	  -	Anzahl der Rückzahlungsperioden
+    @n = 0
+  end
   
-  # K0	-	Anfangskapital
-  @k0 = 0
-  
-  # n	  -	Laufzeit (Jahre, Monate, Tage
-  # n	  -	Anzahl der Rückzahlungsperioden
-  @n = 0
+
   
   # r	  -	Rente / Rate
   def r(*rate)
@@ -29,52 +37,85 @@ class Investment
     end
   end
 
-  # p	  -	Zinssatz in Prozent
-  @p = 0.0
-  
+
   # q	  -	Aufzinsungsfaktor ( q = 1 + i )
   def q
     1+i
   end
 
+
   def qn
     q**n
   end
+
 
   # v	  -	Abzinsungsfaktor (v = 1 / q )
   def v
     1/q
   end
 
+
   # i	  -	Zinssatz ( i = p / 100 )
   def i
-    @p/100
+    (@p-@inflation)/100
   end
 
-  # Kn	-	Endkapital
+
+  # Kn	-	Endkapital zinseszinslicher Verzinsung
   def kn
+    k0*qn
+  end
+
+
+  # Kn	-	Endkapital einfacher Verzinsung 
+  def kn_einfach
     k0*(1+(i*n))
   end
+  
   
   # Rn	-	Endwert der nachschüssigen Rente 
   def rn
     r*((qn-1)/(q-1))
   end
 
+
   #  Die nachschüssige Rentenbarwertformel (RBF) lautet
   def rbf
     rn*(1/qn)
   end
   
+  
   # Barwert der nachschussigen ewigen Rente
   def r0
-    rn*(1/qn) 
+    r/i
   end
-  
   
 
 end
 
+
+
+# Ein Betrag von 100 € wird bei einer einfachen Verzinsung von 2% genau drei Jahre 
+# lang ausgeliehen. Die Zinszahlung soll am Ende der Laufzeit erfolgen. Wie groß ist die 
+# am Ende der Laufzeit angesammelte Summe aus Kapital und Zinsen?
+#invest = Investment.new
+#invest.k0 = 100
+#invest.p = 2.0
+#invest.n = 3
+#puts invest.kn_einfach.to_i
+
+
+
+# Eine Spareinlage von 100 € wird für 4 Jahre angelegt und mit 6% verzinst. Welche 
+# Höhe hat das Kapital bei zinseszinslicher Verzinsung nach 4 Jahren?
+# invest = Investment.new
+# invest.k0 = 100
+# invest.p = 6.0
+# invest.n = 4
+# puts "mit zinseszinslicher Verzinsung #{invest.kn.to_i} euro "
+# puts "mit einfacher Verzinsung #{invest.kn_einfach.to_i} euro "
+# Bei einfacher Verzinsung ist die Kapitalsumme am Ende des mehrjährigen 
+# Anlagezeitraums kleiner als bei der Zinseszinsrechnung.
 
 
 
@@ -111,7 +152,6 @@ end
 
 
 
-
 # In 18 Jahren sollen dem neugeborenen Kind Benjamin der Familie 
 # Ver’Wöhn 25.000 € zur Verfügung stehen. Wie hoch müssen die 
 # jährlichen Raten sein, die die Ver’Wöhns während der nächsten 18 Jahre 
@@ -119,18 +159,9 @@ end
 # gewünschte Betrag für Benjamin zur Verfügung steht?
 # invest = Investment.new
 # invest.k0 = 25000 
-# invest.p = 5.0    
+# invest.p = 5.0
 # invest.n = 18
 # puts "Familie Verwöhn müsste jährlich #{invest.r.to_i} € einzahlen, damit Benjamin nach 18 Jahren über 25.000 € verfügen kann"
-
-
-
-# Dem selbständigen Marktforscher Kain Risiko werden aus einer 
-# Lebensversicherung an seinem 65. Geburtstag 100.000 € ausgezahlt. 
-# Diesen Betrag möchte Kain Risiko verrenten. Er legt ihn zu 6% 
-# Zinseszinsen bei einer Bank mit der Maßgabe an, ihm jährlich 10.000 €
-# auszuzahlen. Wie lange dauert es, bis das Kapital aufgezehrt ist 
-# (Rentendauer)?
 
 
 

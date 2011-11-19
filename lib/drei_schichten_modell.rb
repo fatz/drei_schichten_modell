@@ -1,63 +1,143 @@
 require "drei_schichten_modell/version"
-require "betriebliche_altersvorsorge"
+
+require "flex"
 require "riester"
+require "betriebliche_altersvorsorge"
 require "basis"
+
 require "beitragsbemessungsgrenze"
+require "investment"
+
 
 module DreiSchichtenModell
+  
+
   
   class AltersvorsorgeMix
 
      def initialize(avatar_info)
        @avatar_info = avatar_info
-       @riester = false
-       @bav     = false
-       @basis   = false
      end
+
+
+
+
+     def flex
+       if @avatar_info.verzinsung && 
+          @avatar_info.aufschubzeit
+          
+         flex =                Flex.new
+         flex.flex_pa =        @avatar_info.flex_beitrag_pa
+         flex.verzinsung =     @avatar_info.verzinsung
+         flex.aufschubzeit =   @avatar_info.aufschubzeit
+         flex.run
+         
+         empfehlung =           false
+         
+         return to_hash("Flexible Altersvorsorge", flex, empfehlung)
+       else
+         puts 'es fehlen daten zur berechnung der Flexiblen Altersvorsorge'
+       end
+     end
+
+
 
 
      def riester
-       riester = Riester.new(@avatar_info[:income])
-       riester.kinder = @avatar_info[:children]
-       riester.verzinsung = @avatar_info[:interest_rate]
-       riester.aufschubzeit = @avatar_info[:paytime]
-       riester.run
-       return riester
+       if @avatar_info.kinder && 
+          @avatar_info.verzinsung && 
+          @avatar_info.aufschubzeit
+          
+         riester =                Riester.new(@avatar_info.einkommen)
+         riester.kinder =         @avatar_info.kinder
+         riester.verzinsung =     @avatar_info.verzinsung
+         riester.aufschubzeit =   @avatar_info.aufschubzeit
+         riester.run
+         
+         empfehlung =             @avatar_info.grv ? true : false
+         
+         return to_hash("Riester Rente", riester, empfehlung)
+       else
+         puts 'es fehlen daten zur berechnung der Riester Rente'
+       end
      end
+
+
+
+
 
 
 
      def bav
-       bav = BetrieblicheAltersvorsorge.new(@avatar_info[:income])
-       bav.kinder = @avatar_info[:children]
-       bav.steuerklasse = @avatar_info[:taxclass]
-       bav.bav_pa = @avatar_info[:bav_pa] if @avatar_info[:bav_pa]
-       bav.verzinsung = @avatar_info[:interest_rate]
-       bav.aufschubzeit = @avatar_info[:paytime]
-       bav.run
-       return bav
+       if @avatar_info.steuerklasse && 
+          @avatar_info.bav_beitrag_pa && 
+          @avatar_info.verzinsung && 
+          @avatar_info.aufschubzeit
+          
+         
+         bav =                    BetrieblicheAltersvorsorge.new(@avatar_info.einkommen)
+         bav.steuerklasse =       @avatar_info.steuerklasse
+         bav.bav_pa =             @avatar_info.bav_beitrag_pa
+         bav.verzinsung =         @avatar_info.verzinsung
+         bav.aufschubzeit =       @avatar_info.aufschubzeit
+         bav.run
+         
+         empfehlung =             @avatar_info.pflichtversichert ? true : false
+         
+         return to_hash("Betriebliche Altersvorsorge", bav, empfehlung)
+       else
+         puts 'es fehlen daten zur berechnung der Betriebliche Altersvorsorge'
+       end
      end
+
+
+
 
 
      def basis
-       basis = Basis.new(@avatar_info[:income])
-       basis.basis_pa = @avatar_info[:basis_pa]
-       basis.steuerklasse = @avatar_info[:taxclass]
-       basis.verzinsung = @avatar_info[:interest_rate]
-       basis.aufschubzeit = @avatar_info[:paytime]
-       basis.run
-       return basis
+       if @avatar_info.basis_beitrag_pa && 
+          @avatar_info.steuerklasse && 
+          @avatar_info.verzinsung && 
+          @avatar_info.aufschubzeit
+
+          basis =                 Basis.new(@avatar_info.einkommen)
+          basis.basis_pa =        @avatar_info.basis_beitrag_pa
+          basis.steuerklasse =    @avatar_info.steuerklasse
+          basis.verzinsung =      @avatar_info.verzinsung
+          basis.aufschubzeit =    @avatar_info.aufschubzeit
+          basis.run
+          
+          empfehlung =            @avatar_info.grv ? false : true
+          
+          return to_hash("Ruerup-Rente", basis, empfehlung)
+        else
+          puts 'es fehlen daten zur berechnung der Ruerup-Rente'
+      end
+     end
+     
+     
+     
+     
+     def to_hash(name, produkt, foerderberechtigt)
+        {
+          empfehlung:             empfehlung,
+          typ:                    name, 
+          anlage:                 produkt.anlage, 
+          rendite:                produkt.rendite,
+          zulage:                 produkt.zulage,
+          eigenbeitrag:           produkt.eigenbeitrag,
+          gesamt_eigenbeitrag:    produkt.eigenbeitrag,
+          ablaufleistung:         produkt.ablaufleistung
+        }
      end
 
 
 
-     def bestmix
-       @riester = @avatar_info[:state_pension] ? riester : false
-       @bav     = @avatar_info[:compulsory_insurance] ? bav : false
-       @basis   = @avatar_info[:state_pension] ? false : basis
-
-       return  @riester, @bav, @basis
+     def produkte
+       return  flex, riester, bav, basis
      end
+     
+     
   end
   
 
