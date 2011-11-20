@@ -4,6 +4,7 @@ require "flex"
 require "riester"
 require "betriebliche_altersvorsorge"
 require "basis"
+require "gesetzlichen_rentenversicherung"
 
 require "beitragsbemessungsgrenze"
 require "investment"
@@ -118,7 +119,33 @@ module DreiSchichtenModell
      
      
      
-     def to_hash(name, produkt, foerderberechtigt)
+     def grv
+       if @avatar_info.renteneintrittsalter && 
+          @avatar_info.geburtsjahr &&
+          @avatar_info.berufseinstieg && 
+          @avatar_info.bundesland
+
+          grv =                           GesetzlichenRentenversicherung.new(@avatar_info.einkommen)
+          grv.renteneintrittsalter =      @avatar_info.renteneintrittsalter
+          grv.geburtsjahr =               @avatar_info.geburtsjahr
+          grv.bundesland =                @avatar_info.bundesland
+          grv.berufseinstieg =            @avatar_info.berufseinstieg
+          grv.grv_pa =                    @avatar_info.grv_rente_pa
+          grv.run
+          
+          empfehlung =                    true
+          
+          return to_hash("gesetzliche Rentenversicherung", grv, empfehlung)
+        else
+          puts 'es fehlen daten zur berechnung der gesetzlichen Rentenversicherung'
+      end
+     end
+
+     
+     
+     
+     def to_hash(name, produkt, empfehlung)
+
         {
           empfehlung:             empfehlung,
           typ:                    name, 
@@ -126,8 +153,9 @@ module DreiSchichtenModell
           rendite:                produkt.rendite,
           zulage:                 produkt.zulage,
           eigenbeitrag:           produkt.eigenbeitrag,
-          gesamt_eigenbeitrag:    produkt.eigenbeitrag,
-          ablaufleistung:         produkt.ablaufleistung
+          gesamt_eigenbeitrag:    produkt.gesamt_eigenbeitrag,
+          ablaufleistung:         produkt.ablaufleistung,
+          rente:                  produkt.rente
         }
      end
 

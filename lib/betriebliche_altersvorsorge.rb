@@ -1,7 +1,7 @@
 require 'abgabenrechner'
 
 class BetrieblicheAltersvorsorge
- attr_reader :anlage, :zulage, :rendite, :eigenbeitrag, :ablaufleistung
+ attr_reader :anlage, :zulage, :rendite, :eigenbeitrag, :ablaufleistung, :gesamt_eigenbeitrag, :rente
  attr_accessor :steuerklasse, :kosten, :anlage, :bav_pa, :debug, :verzinsung, :aufschubzeit
 
  def initialize(bruttojahresgehalt)
@@ -12,6 +12,7 @@ class BetrieblicheAltersvorsorge
    @steuerklasse =  1
    @verzinsung   = 2
    @aufschubzeit = 1
+   @gesamt_eigenbeitrag = 0
  end
 
 
@@ -22,10 +23,10 @@ class BetrieblicheAltersvorsorge
   rechen_brutto_pa = @brutto_pa - bav_pa
 
   p = {
-   :lzz 	=>  1,
-   :re4 	=>  rechen_brutto_pa*100,
-   :stkl 	=>  @steuerklasse,
-   :pvz 	=>  1, # ohne kinder weil PKZ=1
+   :lzz 	      =>  1,
+   :re4 	      =>  rechen_brutto_pa*100,
+   :stkl 	      =>  @steuerklasse,
+   :pvz 	      =>  1, # ohne kinder weil PKZ=1
    :krv         =>  0,
    :lzzfreib    =>  bav_pa
   } 
@@ -77,7 +78,7 @@ class BetrieblicheAltersvorsorge
    invest.r = @anlage
    invest.n = @aufschubzeit   
    @ablaufleistung = invest.rn.to_i
-   
+   @gesamt_eigenbeitrag = @anlage*@aufschubzeit
    
   end
 

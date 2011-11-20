@@ -1,6 +1,6 @@
 class Riester
   
-  attr_reader :anlage, :rendite, :eigenbeitrag, :zulage, :ablaufleistung
+  attr_reader :anlage, :rendite, :eigenbeitrag, :zulage, :ablaufleistung, :gesamt_eigenbeitrag, :rente
   attr_writer :partner, :kinder, :verzinsung, :aufschubzeit
  
   def initialize(bruttojahreseinkommen)
@@ -14,6 +14,7 @@ class Riester
     @verzinsung   = 2.0
     @aufschubzeit = 1
     @ablaufleistung = 0 
+    @gesamt_eigenbeitrag = 0
   end
 
 
@@ -35,7 +36,8 @@ class Riester
     @anlage       =  @anlagebetrag + @zulage
     @eigenbeitrag =  eigenbeitrag
     @rendite      =  (@zulage*100/@anlagebetrag)+@verzinsung
-    
+    @gesamt_eigenbeitrag = @anlage*@aufschubzeit
+        
     invest = Investment.new
     invest.p = @verzinsung
     invest.r = @anlage

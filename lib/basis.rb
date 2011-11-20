@@ -3,7 +3,7 @@ require 'abgabenrechner'
 
 class Basis
  
- attr_reader :anlage, :zulage, :eigenbeitrag, :rendite, :ablaufleistung
+ attr_reader :anlage, :zulage, :eigenbeitrag, :rendite, :ablaufleistung, :gesamt_eigenbeitrag, :rente
  attr_writer :debug, :steuerklasse, :basis_pa, :verzinsung, :aufschubzeit
 
 
@@ -16,6 +16,7 @@ class Basis
   @plusdings 	  = 50   # damit das ergebis besser stimmt
   @verzinsung   = 2
   @aufschubzeit = 1
+  @gesamt_eigenbeitrag = 0
  end
 
 
@@ -59,7 +60,7 @@ class Basis
    invest.r = @anlage
    invest.n = @aufschubzeit   
    @ablaufleistung = invest.rn.to_i
-   
+   @gesamt_eigenbeitrag = @anlage*@aufschubzeit
 
    if @debug
       puts "#{((p2e[:lstlzz]-p1e[:lstlzz])/100)+@plusdings} euro forderung"
