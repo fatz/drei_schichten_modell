@@ -95,6 +95,7 @@ end
 
 
 
+
 # Ein Betrag von 100 € wird bei einer einfachen Verzinsung von 2% genau drei Jahre 
 # lang ausgeliehen. Die Zinszahlung soll am Ende der Laufzeit erfolgen. Wie groß ist die 
 # am Ende der Laufzeit angesammelte Summe aus Kapital und Zinsen?
@@ -143,8 +144,7 @@ end
 # invest.p = 6.0
 # invest.r = 10000
 # invest.n = 10
-# puts "der Rentenbarwert von Berta Gierig betaegt #{invest.r0.to_i} euro"
-# puts "Sie könnte sich also #{invest.r0.to_i} € sofort auszahlen lassen."
+# puts "Sie könnte sich also #{invest.rbf.to_i} € sofort auszahlen lassen."
 # puts "Der Endwert von Berta Gierigs Lottogewinn beträgt #{invest.rn.to_i} euro."
 
 

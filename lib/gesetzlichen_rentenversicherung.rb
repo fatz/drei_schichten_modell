@@ -11,6 +11,9 @@ class GesetzlichenRentenversicherung
     @brutto_pa 	          = bruttojahresgehalt
     @verzinsung           = 2.0
     @grv_pa               = 0
+    @zulage = 0
+    @ablaufleistung = 0
+    @anlage = 0
   end
   
 
@@ -22,12 +25,12 @@ class GesetzlichenRentenversicherung
     @rentenwert           = 26.56
     
     @rendite              =  @verzinsung
-    @eigenbeitrag         = ((@brutto_pa/100)*9.95)/12
+    @eigenbeitrag         = (@brutto_pa/100)*9.95
     @gesamt_eigenbeitrag  = ((@brutto_pa/100)*9.95)*@rentenanwartschaftszeit
     if @grv_pa == 0
-      @rente = @entgeltpunkte*@zugangsfaktor*@rentenartfaktor*@rentenwert
+      @rente = (@entgeltpunkte*@zugangsfaktor*@rentenartfaktor*@rentenwert)*12
     else
-      @rente = @grv_pa/12
+      @rente = @grv_pa
     end
   end
 

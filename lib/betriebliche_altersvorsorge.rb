@@ -2,17 +2,19 @@ require 'abgabenrechner'
 
 class BetrieblicheAltersvorsorge
  attr_reader :anlage, :zulage, :rendite, :eigenbeitrag, :ablaufleistung, :gesamt_eigenbeitrag, :rente
- attr_accessor :steuerklasse, :kosten, :anlage, :bav_pa, :debug, :verzinsung, :aufschubzeit
+ attr_accessor :steuerklasse, :kosten, :anlage, :bav_pa, :debug, :verzinsung, :aufschubzeit, :rentengarantiefaktor
 
  def initialize(bruttojahresgehalt)
-   @debug	 = false
-   @kinder	 = false
-   @brutto_pa 	 =  bruttojahresgehalt
-   @bav_pa 	 =  Beitragsbemessungsgrenze.new('west').bav_maximal_beitrag 
-   @steuerklasse =  1
-   @verzinsung   = 2
-   @aufschubzeit = 1
-   @gesamt_eigenbeitrag = 0
+   @debug                 = false
+   @kinder                = false
+   @brutto_pa             = bruttojahresgehalt
+   @bav_pa                = Beitragsbemessungsgrenze.new('west').bav_maximal_beitrag 
+   @steuerklasse          = 1
+   @verzinsung            = 2
+   @aufschubzeit          = 1
+   @gesamt_eigenbeitrag   = 0
+   @rentengarantiefaktor  = 36.51
+   @versicherungskosten   = 10000
  end
 
 
@@ -77,9 +79,11 @@ class BetrieblicheAltersvorsorge
    invest.p = @verzinsung.to_f
    invest.r = @anlage
    invest.n = @aufschubzeit   
-   @ablaufleistung = invest.rn.to_i
+   @ablaufleistung = invest.rn.to_i - @versicherungskosten
    @gesamt_eigenbeitrag = @anlage*@aufschubzeit
    
+   prozehntausend = @ablaufleistung/10000
+   @rente = (prozehntausend*@rentengarantiefaktor)*12
   end
 
 

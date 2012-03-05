@@ -4,8 +4,7 @@ require 'abgabenrechner'
 class Basis
  
  attr_reader :anlage, :zulage, :eigenbeitrag, :rendite, :ablaufleistung, :gesamt_eigenbeitrag, :rente
- attr_writer :debug, :steuerklasse, :basis_pa, :verzinsung, :aufschubzeit
-
+ attr_writer :debug, :steuerklasse, :basis_pa, :verzinsung, :aufschubzeit, :rentengarantiefaktor
 
 
  def initialize(bruttojahresgehalt)
@@ -17,6 +16,9 @@ class Basis
   @verzinsung   = 2
   @aufschubzeit = 1
   @gesamt_eigenbeitrag = 0
+  @rentengarantiefaktor = 36.51
+  @versicherungskosten  = 10000
+
  end
 
 
@@ -59,8 +61,11 @@ class Basis
    invest.p = @verzinsung.to_f
    invest.r = @anlage
    invest.n = @aufschubzeit   
-   @ablaufleistung = invest.rn.to_i
+   @ablaufleistung =     invest.rn.to_i-@versicherungskosten
    @gesamt_eigenbeitrag = @anlage*@aufschubzeit
+
+   prozehntausend = @ablaufleistung/10000
+   @rente = (prozehntausend*@rentengarantiefaktor)*12
 
    if @debug
       puts "#{((p2e[:lstlzz]-p1e[:lstlzz])/100)+@plusdings} euro forderung"
