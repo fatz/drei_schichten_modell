@@ -158,7 +158,7 @@ module DreiSchichtenModell
           grv.geburtsjahr =               @avatar_info.geburtsjahr
           grv.bundesland =                @avatar_info.bundesland
           grv.berufseinstieg =            @avatar_info.berufseinstieg
-          grv.grv_pa =                    @avatar_info.grv_rente_pa
+          grv.grv_pa =                    @avatar_info.grv_rente_pa ? @avatar_info.grv_rente_pa : 0
           grv.run
 
           @empfehlung =                   @avatar_info.grv ? true : false
