@@ -4,7 +4,7 @@ require "drei_schichten_modell/version"
 
 Gem::Specification.new do |s|
   s.name                      = "drei_schichten_modell"
-  s.version                   = '0.0.5'
+  s.version                   = '0.0.6'
   s.authors                   = ["Felix Faerber"]
   s.email                     = ["mail@ffaerber.com"]
   s.homepage                  = "https://github.com/ffaerber/drei_schichten_modell"
